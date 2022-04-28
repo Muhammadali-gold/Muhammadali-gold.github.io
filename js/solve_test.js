@@ -10,11 +10,7 @@ va {c} sonlariga proporsional bo’lsa, uchburchakning katta burchagini toping.`
       sign:"{a}",
       type:"Z",
       range:{ min:1, max:10,type:"in"}
-    },{
-        sign:"{a}",
-        type:"Z",
-        range:{min:1,max:10,type:"in"}
-      },
+    },
       {
         sign:"{b}",
         type:"Z",
@@ -24,7 +20,7 @@ va {c} sonlariga proporsional bo’lsa, uchburchakning katta burchagini toping.`
         sign:"{c}",
         type:"Z",
         range:{min:1,max:10,type:"in"}
-      },
+      }
   ],
   answer:{
     formula:"180*max({a},{b},{c})/({a}+{b}+{c})",
@@ -117,28 +113,101 @@ function setQuestionBody(body,randomVariables) {
     $(".question-body").html(`${body}`);
 }
 
+function evaluateAnswer(answer,randomVariables){
+   let vars = randomVariables.variables;
+    let answerx = 180 / (vars[0].value + vars[1].value + vars[2].value) * Math.max(vars[0].value , vars[1].value , vars[2].value);
+    return {
+        value:answerx
+    };
+}
+
+function evaluateVars(variants,randomVariables){
+    let vars = randomVariables.variables;
+    let answerx = 180 / (vars[0].value + vars[1].value + vars[2].value) * Math.max(vars[0].value , vars[1].value , vars[2].value);
+    let minx = 180 / (vars[0].value + vars[1].value + vars[2].value) * Math.min(vars[0].value , vars[1].value , vars[2].value);
+    let midx = 180-minx-answerx
+    if (midx === minx){
+        midx-=5;
+    }
+    if (midx === answerx){
+        midx-=5;
+    }
+    return [{
+        value:minx
+    },{
+        value:midx
+    },{
+        value:answerx+5
+    }];
+}
+
 function setQuestionVariants(answer,variants,randomVariables) {
   let answerValue = evaluateAnswer(answer,randomVariables);
   let variantsValue = evaluateVars(variants,randomVariables);
+  console.log("answer",answer);
+  console.log("answerValue",answerValue );
+  console.log("variants",variants);
+  console.log("randomVariables",randomVariables)
+
+  variantsValue.push(answerValue);
+
+  shuffle(variantsValue);
+
+  for (let i=0;i<4;i++){
+    let s = ['a','b','c','d'];
+    $(`.var-${s[i]} .var-body`).text(variantsValue[i].value);
+  }
+}
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
 
 function generateRandomVars(question) {
-  // pass
+   let variables = question.variables;
+   let result = [];
+   let avar = variables[0];
+   let bvar = variables[1];
+   let cvar = variables[2];
+   for (let a_val=avar.range.min; a_val <= avar.range.max;a_val++){
+        for (let b_val=bvar.range.min; b_val <= bvar.range.max;b_val++){
+            for (let c_val=cvar.range.min; c_val <= cvar.range.max;c_val++){
+                if (180 % (a_val+b_val+c_val) == 0){
+                    result.push ({
+                    variables:[{
+                            sign:avar.sign,
+                            value:a_val
+                        },{
+                            sign:bvar.sign,
+                            value:b_val
+                        },{
+                            sign:cvar.sign,
+                            value:c_val
+                        }]
+                    })
+                }
+            }
+        }
+   }
+   console.log(`found ${result.length} combinations`)
+   shuffle(result);
+   return result[0];
 
-  return {
-    // variants:[{
-    //     index:1,
-    //     value:50
-    //   },
-    //   {
-    //     index:0,
-    //     value:80
-    //   },
-    //   {
-    //     index:2,
-    //     value:60
-    //   },
-    // ],
+   return {
     variables:[
       {
         sign:"{a}",
@@ -158,15 +227,21 @@ function generateRandomVars(question) {
 
 
 $(document).ready(()=>{
-  console.log("ready")
+//  console.log("ready")
   let question = questions[0];
 
   let randomVariables = generateRandomVars(question)
+
   console.log(randomVariables)
+
   setQuestionNumber(question.number);
+
   setQuestionCategory(question.category);
+
   setQuestionPoints(question.points);
+
   setQuestionBody(question.body,randomVariables);
+
   setQuestionVariants(question.answer,question.variants,randomVariables);
 
 })
