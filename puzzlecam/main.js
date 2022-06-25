@@ -166,7 +166,7 @@ function initializePieces(rows, columns) {
             PIECES.push(new Piece(i, j));
         }
     }
-    console.log(PIECES);
+    randomizePieces();
 }
 
 class Piece {
