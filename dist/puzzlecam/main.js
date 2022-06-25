@@ -5,7 +5,8 @@ let PIECES = [];
 let SCALAR = 0.6;
 let SIZE = {x: 0, y: 0, width: 0, height: 0, columns: 3, rows: 3};
 let SELECTED_PIECE = null;
-
+let START_TIME;
+let END_TIME;
 
 function main() {
     CANVAS = document.getElementById("myCanvas");
@@ -110,6 +111,29 @@ function getPressedPiece(loc) {
     return null;
 }
 
+function setDifficulty(){
+    let diff = document.getElementById("difficulty").value;
+    switch(diff){
+        case "easy":
+            initializePieces(3,3);
+            break;
+        case "medium":
+            initializePieces(5,5);
+            break;
+        case "hard":
+            initializePieces(10,10);
+            break;
+        case "insane":
+            initializePieces(40,25);
+            break;
+    }
+}
+
+function restart(){
+    let START_TIME = new Date().getTime();
+    END_TIME=null;
+    randomizePieces();
+}
 
 function handleResize() {
     CANVAS.width = window.innerWidth;
@@ -166,7 +190,7 @@ function initializePieces(rows, columns) {
             PIECES.push(new Piece(i, j));
         }
     }
-    randomizePieces();
+    // randomizePieces();
 }
 
 class Piece {

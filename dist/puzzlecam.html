@@ -8,5 +8,19 @@
 </head>
 <body onload="main()">
     <canvas id="myCanvas"></canvas>
+    <div id="menuItems">
+        <div class="menu">
+            <div class="controls">
+                Difficulty <select name="difficulty" id="difficulty" onchange="setDifficulty()">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="insane">Insane</option>
+            </select>
+                <button onclick="restart()">Restart</button>
+            </div>
+        </div>
+        <div id="id"></div>
+    </div>
 </body>
 </html>
