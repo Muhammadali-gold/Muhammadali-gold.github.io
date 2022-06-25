@@ -13,7 +13,7 @@ function main() {
     addEventListeners();
     navigator.mediaDevices.getUserMedia(
         {
-            audio: true,
+            audio: false,
             video: {
                 width: {ideal: 200},
                 height: {ideal: 400}
