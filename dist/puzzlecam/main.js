@@ -7,7 +7,7 @@ let SIZE = {x: 0, y: 0, width: 0, height: 0, columns: 3, rows: 3};
 let SELECTED_PIECE = null;
 let START_TIME;
 let END_TIME;
-
+console.log("Hiiii")
 function main() {
     CANVAS = document.getElementById("myCanvas");
     CONTEXT = CANVAS.getContext("2d");
